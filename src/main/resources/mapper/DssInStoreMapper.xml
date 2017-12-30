@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- dss_in_store[dss_in_store]SQLMapper自动映射 -->
+<!--  注意:此文件由AOS平台自动生成-禁止手工修改 2017-12-30 20:34:04 -->
+<mapper namespace="application.controller.Dto.Mapper.DssInStoreMapper">
+
+	<!-- 根据Dto查询并返回数据持久化对象集合 -->
+	<select id="list" parameterType="Map" resultType="application.controller.Dto.Po.DssInStorePO">
+		SELECT
+			<include refid="column" />	
+		FROM dss_in_store
+		<where>
+		    <include refid="equal" />
+		</where>
+	</select>
+	
+	<!-- 表字段 -->
+	<sql id="column">
+		  id,  <!-- id -->
+		  in_no,  <!-- 入库编号 -->
+		  in_date,  <!-- 入库时间 -->
+		  in_type,  <!-- 入库类型 -->
+		  store_id,  <!-- 仓库编号 -->
+		  store_name,  <!-- 仓库名称 -->
+		  product_line_id,  <!-- 生产线编号 -->
+		  product_line_name  <!-- 生产线名称 -->
+	</sql>
+	
+	<!-- 表字段(用于外表的关联时引用) -->
+	<sql id="column2">
+		  dss_in_store.id,  <!-- id -->
+		  dss_in_store.in_no,  <!-- 入库编号 -->
+		  dss_in_store.in_date,  <!-- 入库时间 -->
+		  dss_in_store.in_type,  <!-- 入库类型 -->
+		  dss_in_store.store_id,  <!-- 仓库编号 -->
+		  dss_in_store.store_name,  <!-- 仓库名称 -->
+		  dss_in_store.product_line_id,  <!-- 生产线编号 -->
+		  dss_in_store.product_line_name  <!-- 生产线名称 -->
+	</sql>
+
+	<!-- Where精确匹配字段 -->
+	<sql id="equal">
+	   <if test="id != null ">
+		      AND id = #{id}  <!-- id -->
+		</if>
+	    <if test="in_no != null and in_no != ''">
+		      AND in_no = #{in_no}  <!-- 入库编号 -->
+		</if>
+	    <if test="in_date != null and in_date != ''">
+		      AND in_date = #{in_date}  <!-- 入库时间 -->
+		</if>
+	    <if test="in_type != null and in_type != ''">
+		      AND in_type = #{in_type}  <!-- 入库类型 -->
+		</if>
+	   <if test="store_id != null ">
+		      AND store_id = #{store_id}  <!-- 仓库编号 -->
+		</if>
+	    <if test="store_name != null and store_name != ''">
+		      AND store_name = #{store_name}  <!-- 仓库名称 -->
+		</if>
+	   <if test="product_line_id != null ">
+		      AND product_line_id = #{product_line_id}  <!-- 生产线编号 -->
+		</if>
+	    <if test="product_line_name != null and product_line_name != ''">
+		      AND product_line_name = #{product_line_name}  <!-- 生产线名称 -->
+		</if>
+	</sql>
+	
+	<!-- Where模糊匹配字段 -->
+	<sql id="like">
+	    <if test="in_no != null and in_no != ''">
+		      AND in_no like '%${in_no}%'  <!-- 入库编号 -->
+		</if>
+	    <if test="in_date != null and in_date != ''">
+		      AND in_date like '%${in_date}%'  <!-- 入库时间 -->
+		</if>
+	    <if test="in_type != null and in_type != ''">
+		      AND in_type like '%${in_type}%'  <!-- 入库类型 -->
+		</if>
+	    <if test="store_name != null and store_name != ''">
+		      AND store_name like '%${store_name}%'  <!-- 仓库名称 -->
+		</if>
+	    <if test="product_line_name != null and product_line_name != ''">
+		      AND product_line_name like '%${product_line_name}%'  <!-- 生产线名称 -->
+		</if>
+	</sql>
+	
+</mapper>
