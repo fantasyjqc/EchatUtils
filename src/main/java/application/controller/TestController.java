@@ -2,10 +2,7 @@ package application.controller;
 
 import application.controller.Dto.Mapper.DssInStoreMapper;
 import application.controller.Dto.Po.DssInStorePO;
-import application.controller.Utils.CSVUtils;
-import application.controller.Utils.EChartUtils;
-import application.controller.Utils.ExcelUtils;
-import application.controller.Utils.PDFUtils;
+import application.controller.Utils.*;
 import com.github.abel533.echarts.*;
 import com.github.abel533.echarts.DataZoom;
 import com.github.abel533.echarts.axis.AxisLabel;
@@ -14,15 +11,8 @@ import com.github.abel533.echarts.code.*;
 import com.github.abel533.echarts.feature.*;
 import com.github.abel533.echarts.json.GsonOption;
 import com.github.abel533.echarts.series.Line;
-import com.google.gson.Gson;
-import com.itextpdf.text.PageSize;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
-import com.xuxueli.poi.excel.ExcelExportUtil;
-import jxl.write.WritableWorkbook;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -42,7 +30,7 @@ import java.util.Map;
 
 
 @Controller
-public class Testcontroller {
+public class TestController {
 
     @Autowired
     DssInStoreMapper dssInStoreMapper;
@@ -110,10 +98,14 @@ public class Testcontroller {
         ExcelUtils excelUtils = new ExcelUtils();
         String[] headers = {"编号","入库编号","入库时间","入库类型","仓库编号","仓库名称","生产线编号","生产线名称"};
         String[] cols = {"id","in_no","in_date","in_type","store_id","store_name","product_line_id","product_line_name"};
-//        HSSFWorkbook hssfWorkbook = excelUtils.exportExcel2003("入库信息",headers,cols,result,null);
+
+        XSSFWorkbook hssfWorkbook = excelUtils.exportExcel2007("入库信息",headers,cols,result,null);
+//        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+//        excelUtils.addExcel2003Sheet(hssfWorkbook,"入库信息",headers,cols,result,null);
+//        excelUtils.addExcel2003Sheet(hssfWorkbook,"入库信息2",headers,cols,result,null);
 //        SXSSFWorkbook sxssfWorkbook = excelUtils.exportExcel2007BigData("入库信息",headers,cols,result,null);
         response.setContentType("multipart/form-data");
-        response.setHeader("Content-Disposition","attachment;fileName=ExportData.pdf");
+        response.setHeader("Content-Disposition","attachment;fileName=ExportData.xlsx");
 //        excelUtils.exportExcelJXI2003("入库信息",headers,cols,result,null,response);
 //        Workbook workbook = ExcelExportUtil.exportWorkbook(result);
 //        OutputStream outputStream = response.getOutputStream();
@@ -123,15 +115,19 @@ public class Testcontroller {
         float[] width = {Float.valueOf("0.05"),Float.valueOf("0.25"),Float.valueOf("0.2"),Float.valueOf("0.2"),Float.valueOf("0.05"),Float.valueOf("0.1"),Float.valueOf("0.05"),Float.valueOf("0.1")};
 //        pdfUtils.exportPDF("入库信息",width, PageSize.A1,headers,cols,result,null,response);
         CSVUtils csvUtils = new CSVUtils();
-        response.getOutputStream().write(new   byte []{( byte ) 0xEF ,( byte ) 0xBB ,( byte ) 0xBF });
-        CsvWriter csvWriter = new CsvWriter(response.getOutputStream(),new CsvWriterSettings());
-        csvWriter.writeHeaders(headers);
-        for(int i = 0 ; i < 50; i++){
-            csvUtils.exportCSVRows(csvWriter,cols,result,null);
-        }
-        csvWriter.flush();
-        csvWriter.close();
+//        ResponseUtils.addUTF8BOM(response);
+//        CsvWriter csvWriter = new CsvWriter(response.getOutputStream(),new CsvWriterSettings());
+//        csvWriter.writeHeaders(headers);
+//        for(int i = 0 ; i < 50; i++){
+//            csvUtils.exportCSVRows(csvWriter,cols,result,null);
+//        }
+//        csvWriter.flush();
+//        csvWriter.close();
 //        csvUtils.exportCSV(headers,cols,result,null,response);
+//        TSVUtils tsvUtils = new TSVUtils();
+//        tsvUtils.exportTSV(headers,cols,result,null,response);
+        hssfWorkbook.write(response.getOutputStream());
+        hssfWorkbook.close();
         Long end = System.currentTimeMillis();
         System.out.println((end - start) / 1000);
     }
