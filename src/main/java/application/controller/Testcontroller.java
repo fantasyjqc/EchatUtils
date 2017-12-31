@@ -2,6 +2,7 @@ package application.controller;
 
 import application.controller.Dto.Mapper.DssInStoreMapper;
 import application.controller.Dto.Po.DssInStorePO;
+import application.controller.Utils.CSVUtils;
 import application.controller.Utils.EChartUtils;
 import application.controller.Utils.ExcelUtils;
 import application.controller.Utils.PDFUtils;
@@ -15,6 +16,8 @@ import com.github.abel533.echarts.json.GsonOption;
 import com.github.abel533.echarts.series.Line;
 import com.google.gson.Gson;
 import com.itextpdf.text.PageSize;
+import com.univocity.parsers.csv.CsvWriter;
+import com.univocity.parsers.csv.CsvWriterSettings;
 import com.xuxueli.poi.excel.ExcelExportUtil;
 import jxl.write.WritableWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -31,7 +34,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,10 +107,6 @@ public class Testcontroller {
         Long start = System.currentTimeMillis();
         Map map = new HashMap();
         List<DssInStorePO> result = dssInStoreMapper.list(map);
-        List<DssInStorePO> result_big = new ArrayList<DssInStorePO>();
-//        for(int i = 0 ; i < 30 ; i++){
-//            result_big.addAll(result);
-//        }
         ExcelUtils excelUtils = new ExcelUtils();
         String[] headers = {"编号","入库编号","入库时间","入库类型","仓库编号","仓库名称","生产线编号","生产线名称"};
         String[] cols = {"id","in_no","in_date","in_type","store_id","store_name","product_line_id","product_line_name"};
@@ -122,10 +121,37 @@ public class Testcontroller {
 //        workbook.write(response.getOutputStream());
         PDFUtils pdfUtils = new PDFUtils();
         float[] width = {Float.valueOf("0.05"),Float.valueOf("0.25"),Float.valueOf("0.2"),Float.valueOf("0.2"),Float.valueOf("0.05"),Float.valueOf("0.1"),Float.valueOf("0.05"),Float.valueOf("0.1")};
-        pdfUtils.exportPDF("入库信息",width, PageSize.A1,headers,cols,result,null,response);
+//        pdfUtils.exportPDF("入库信息",width, PageSize.A1,headers,cols,result,null,response);
+        CSVUtils csvUtils = new CSVUtils();
+        response.getOutputStream().write(new   byte []{( byte ) 0xEF ,( byte ) 0xBB ,( byte ) 0xBF });
+        CsvWriter csvWriter = new CsvWriter(response.getOutputStream(),new CsvWriterSettings());
+        csvWriter.writeHeaders(headers);
+        for(int i = 0 ; i < 50; i++){
+            csvUtils.exportCSVRows(csvWriter,cols,result,null);
+        }
+        csvWriter.flush();
+        csvWriter.close();
+//        csvUtils.exportCSV(headers,cols,result,null,response);
         Long end = System.currentTimeMillis();
         System.out.println((end - start) / 1000);
     }
 
+
+    @RequestMapping(value = "/testMy2", method = RequestMethod.GET)
+    @ResponseBody
+    public void test22(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        Long start = System.currentTimeMillis();
+        File file = new File("/Users/JQC/Desktop/1.mkv");
+        InputStream is = new FileInputStream(file);
+
+        response.setHeader("Content-Disposition", "attachment; filename=\"dummyname.mkv\"");
+
+        CsvWriter csvWriter = new CsvWriter(response.getOutputStream(),new CsvWriterSettings());
+
+
+
+        Long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000);
+    }
 
 }

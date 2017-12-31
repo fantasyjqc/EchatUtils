@@ -1,9 +1,7 @@
 package application.controller.Utils;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
@@ -25,11 +23,15 @@ public class PDFUtils<T> {
         Font fontZH = new Font(bfChinese, 12.0F, 0);
         PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        Paragraph paragraph = new Paragraph(new Chunk(title, fontZH).setLocalDestination(title));
+        Font fontZHTitle = new Font(bfChinese, 24.0F, 0);
+        fontZHTitle.setColor(BaseColor.RED);
+        Paragraph paragraph = new Paragraph(new Chunk(title, fontZHTitle).setLocalDestination(title));
         paragraph.setAlignment(Element.ALIGN_CENTER);
         document.add(paragraph);
         document.add(new Paragraph("\n"));
         PdfPTable table = new PdfPTable(headers.length);
+        PdfPTableEvent event = new AlternatingBackground();
+        table.setTableEvent(event);
         table.setWidths(widths);
         table.setHeaderRows(1);
         table.getDefaultCell().setHorizontalAlignment(1);
